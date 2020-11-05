@@ -31,7 +31,7 @@ public class AutoCompleteController {
 
         Map<String,Object> map = (Map<String,Object>)Util.getObjectFromApplication(Constants.DEPTMAP_IN_APPLICATION);
 
-        int i = 19;
+        int i = 20;
         return map.values();
 
     }
