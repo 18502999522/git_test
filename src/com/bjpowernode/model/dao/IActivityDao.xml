@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bjpowernode.model.dao.IActivityDao">
+
+
+  <select id="countYearNum" resultType="java.lang.Integer">
+
+  select a2.count from t_calendar c
+
+  left join (
+
+      select count(a1.id,0) count ,a1.date from (
+
+      select a.activity_id id,DATE_FORMAT(a.activity_start_date,'%Y-%m') date  from t_market_activity a
+
+      )a1
+
+      group by a1.date
+
+  ) a2 on a2.date = c.calendar_value
+
+      order by c.calendar_value
+
+  </select>
+
+  <select id="countYearNum2" resultType="java.lang.Integer">
+
+    select ifnull(a2.count,0) value from t_calendar c
+
+    left join (
+
+        select count(a1.id) count ,a1.date from (
+
+        select a.clue_id id,DATE_FORMAT(a.create_time,'%Y-%m') date
+
+       from t_clue a
+
+        )a1
+
+        group by a1.date
+
+    ) a2 on a2.date = c.calendar_value
+
+        order by c.calendar_value
+
+  </select>
+
+    <select id="countYearNum3" resultType="java.util.Map">
+
+
+
+    select type_month.`month`,max(type_month.dict_value) deal_type,count(deal2.deal_id) count from
+
+    (
+    select c.calendar_value month,dc.dict_id type_id,dc.dict_value from t_calendar c,t_dictionary dc,t_dictionary_type dct
+
+    where dc.dict_type_id = dct.dict_type_id and dct.dict_type_code = 'transactionType'
+
+    order by dc.dict_id,c.calendar_value
+
+    )type_month
+
+    left join (
+
+    select de.deal_id,de.deal_type,DATE_FORMAT(de.create_time,'%Y-%m') deal_month  from t_deal de
+
+    )deal2
+
+    on deal2.deal_type = type_month.type_id and deal2.deal_month = type_month.`month`
+
+    group by type_month.`month`,type_month.type_id
+
+    order by deal_type,month
+
+
+    </select>
+
+
+
+
+</mapper>
